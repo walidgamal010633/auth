@@ -12,7 +12,7 @@ class RegisterCubit extends Cubit<RegisterState> {
   final AuthRepository _repository;
   Future<void> register(String email, String password, String name) async {
     emit(RegisterLoading());
-    final result = await _repository.CreateUserWithEmailAndPassword(
+    final result = await _repository.createUserWithEmailAndPassword(
       email: email,
       password: password,
       name: name,

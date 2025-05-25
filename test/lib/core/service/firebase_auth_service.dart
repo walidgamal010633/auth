@@ -7,11 +7,16 @@ class FirebaseAuthService {
   Future<User> createUserWithEmailAndPassword({
     required String email,
     required String password,
+    required String fullName,
   }) async {
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      return credential.user!;
+      await credential.user!.updateDisplayName(fullName);
+      await credential.user!.reload(); 
+      final updatedUser = FirebaseAuth.instance.currentUser;
+
+      return updatedUser!;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw CustomException(message: 'The password provided is too weak.');
@@ -45,11 +50,9 @@ class FirebaseAuthService {
         throw CustomException(message: 'No user found for that email.');
       } else if (e.code == 'wrong-password') {
         throw CustomException(message: 'Wrong password provided.');
-      }else if (e.code == 'invalid-credential') {
+      } else if (e.code == 'invalid-credential') {
         throw CustomException(message: 'Invalid credential provided.');
-      }
-      
-       else {
+      } else {
         throw CustomException(message: "there is an error , please try agaim");
       }
     } catch (e) {

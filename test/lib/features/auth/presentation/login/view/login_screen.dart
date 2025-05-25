@@ -6,6 +6,8 @@ import 'package:test/core/service/firebase_auth_service.dart';
 import 'package:test/features/auth/data/mapper/user_mapper.dart';
 import 'package:test/features/auth/data/repository/auth_repo_imp.dart';
 import 'package:test/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
+import 'package:test/features/home/presentation/view/hoen_screen.dart';
+import 'package:test/main.dart';
 import 'package:test/ui_components/app_button.dart';
 import 'package:test/ui_components/custom_text_field.dart';
 
@@ -38,30 +40,35 @@ class Layout extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
-        if (state is LoginLoading) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("Loading")));
-        }
         if (state is LoginSuccess) {
           log("Success");
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Success")));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("Success")));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(user: state.userEntity),
+            ),
+          );
         }
         if (state is LoginFailure) {
-        log(state.message);
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+          log(state.message);
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       builder: (context, state) {
-        return LoginViewBody();
+        return LoginViewBody(state: state);
       },
     );
   }
 }
 
 class LoginViewBody extends StatefulWidget {
-  const LoginViewBody({super.key});
-
+  const LoginViewBody({super.key, required this.state});
+  final LoginState state;
   @override
   State<LoginViewBody> createState() => _LoginViewBodyState();
 }
@@ -95,12 +102,14 @@ class _LoginViewBodyState extends State<LoginViewBody> {
             prefixicon: Icons.lock,
             suffixicon: Icons.visibility,
           ),
+          widget.state is LoginLoading
+              ? const CircularProgressIndicator()
+              : Container(),
           SizedBox(height: 40),
           AppButton(
             backgroundColor: Colors.black87,
             text: "Login",
             onTap: () {
-              
               setState(() {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();

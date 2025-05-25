@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test/core/service/firebase_auth_service.dart';
 import 'package:test/features/auth/data/mapper/user_mapper.dart';
+import 'package:test/features/auth/data/models/user_model.dart';
 import 'package:test/features/auth/data/repository/auth_repo_imp.dart';
 import 'package:test/features/auth/presentation/cubits/register_cubit/register_cubit.dart';
 import 'package:test/ui_components/app_button.dart';

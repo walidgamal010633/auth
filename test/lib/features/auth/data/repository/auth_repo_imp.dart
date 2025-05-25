@@ -12,17 +12,19 @@ class AuthRepoImp extends AuthRepository {
   AuthRepoImp(this._authService, this._mapper);
 
   @override
-  Future<Either<Failure, UserEntity>> CreateUserWithEmailAndPassword({
+  Future<Either<Failure, UserEntity>> createUserWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
   }) async {
     try {
       var users = await _authService.createUserWithEmailAndPassword(
+        fullName: name,
         email: email,
         password: password,
       );
-
+print("===============================================");
+print(users);
       return right(_mapper.mapToEntity(users));
     } on CustomException catch (e) {
       return left(ServerFailure(e.message));
